@@ -1,0 +1,29 @@
+﻿@model IEnumerable<Nimap_Task.Models.Product>
+
+@{
+    ViewBag.Title = "Product List - " + ViewBag.CategoryName;
+}
+
+<h2>Product List - @ViewBag.CategoryName</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product ID</th>
+            <th>Product Name</th>
+            <th>Category ID</th>
+            <th>Category Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>@product.ProductId</td> 
+                <td>@product.ProductName</td> 
+                <td>@product.CategoryId</td> 
+                <td>@ViewBag.CategoryName</td> 
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,21 @@
+﻿@model IEnumerable<Nimap_Task.Models.Product>
+
+<h2>Products in Category</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>@product.ProductName</td>
+                
+            </tr>
+        }
+    </tbody>
+</table>

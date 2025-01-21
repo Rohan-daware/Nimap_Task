@@ -1,36 +1,59 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Nimap_Task.Models;
 using Nimap_Task.Repositories;
-using Nimap_Task.ViewModels;  // Import the correct namespace
 
 namespace Nimap_Task.Controllers
 {
     public class ProductController : Controller
     {
-        private readonly IProductRepository _productRepository;
+        private readonly IProductRepository _productRepo;
+        private readonly ICategoryRepository _categoryRepo;
 
-        public ProductController(IProductRepository productRepository)
+        public ProductController(IProductRepository productRepo, ICategoryRepository categoryRepo)
         {
-            _productRepository = productRepository;
+            _productRepo = productRepo;
+            _categoryRepo = categoryRepo;
         }
 
-        public IActionResult Index(int page = 1)
+        // GET: Product/Create
+        public IActionResult Create(int categoryId)
         {
-            var pageSize = 10; // Customize this value as needed
-            var products = _productRepository.GetProducts(page, pageSize);
-            var totalProducts = _productRepository.GetTotalProductsCount();
+            ViewBag.CategoryId = categoryId;
+            return View();
+        }
 
-            var viewModel = new ProductListViewModel
+        // POST: Product/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Product product)
+        {
+            if (ModelState.IsValid)
             {
-                Products = products,
-                TotalPages = (int)Math.Ceiling(totalProducts / (double)pageSize),
-                CurrentPage = page
-            };
-
-            return View(viewModel);
+                _productRepo.AddProduct(product);
+                return RedirectToAction("Display", new { id = product.CategoryId });
+            }
+            return View(product);
         }
 
-        // Other actions...
+        public IActionResult Display(int id, bool isStyled = false, bool hasPagination = false)
+        {
+            var category = _categoryRepo.GetCategoryById(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            var products = _productRepo.GetProductsByCategoryId(id);
+
+            // Ensure CategoryName is not null
+            ViewBag.CategoryName = category?.CategoryName ?? "Unknown Category";
+
+            // Set default values for ViewBag.IsStyled and ViewBag.HasPagination
+            ViewBag.IsStyled = isStyled;
+            ViewBag.HasPagination = hasPagination;
+
+            return View("DisplayProducts", products); // Renders DisplayProducts view
+        }
     }
 }
+

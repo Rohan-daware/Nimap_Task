@@ -1,0 +1,19 @@
+﻿@model Nimap_Task.Models.Product
+
+<h2>Create Product</h2>
+
+<form asp-action="Create">
+    <div>
+        <label for="ProductName">Product Name</label>
+        <input asp-for="ProductName" />
+        <span asp-validation-for="ProductName" class="text-danger"></span>
+    </div>
+    <div>
+        <label for="CategoryId">Category</label>
+        <select asp-for="CategoryId" asp-items="ViewBag.CategoryList"></select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+    <button type="submit">Save</button>
+</form>
+
+<a asp-action="Index">Back to Product List</a>
